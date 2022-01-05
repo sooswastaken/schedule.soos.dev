@@ -19,7 +19,8 @@ function updateDocumentWithNewData(current_period, current_day, time_left) {
 }
 
 function setCircleDasharray(timeLeft, timeLimit) {
-    const circleDasharray = `${((timeLeft / timeLimit) * 283).toFixed(0)} 283`;
+    console.log(timeLeft / timeLimit)
+    const circleDasharray = `${((timeLeft / timeLimit) * 283)} 283`;
     document
         .getElementById("base-timer-path-remaining")
         .setAttribute("stroke-dasharray", circleDasharray);
