@@ -59,7 +59,6 @@ function fetchAndStart() {
                     format_string(data.day_type),
                     formatTime(data.total_period_left_time_in_seconds)
                 )
-                console.log("Changing data?")
                 FIRST_TIME_LOAD = false;
             }
             startTimer(data);
