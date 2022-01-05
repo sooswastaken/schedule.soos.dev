@@ -19,9 +19,7 @@ function updateDocumentWithNewData(current_period, current_day, time_left) {
 }
 
 function setCircleDasharray(timeLeft, timeLimit) {
-    const circleDasharray = `${(
-        calculateTimeFraction(timeLeft, timeLimit) * 283
-    ).toFixed(0)} 283`;
+    const circleDasharray = `${((timeLeft / timeLimit) * 283).toFixed(0)} 283`;
     document
         .getElementById("base-timer-path-remaining")
         .setAttribute("stroke-dasharray", circleDasharray);
@@ -50,12 +48,6 @@ function formatTime(time) {
     }
     return `${minutes}:${seconds}`;
 }
-
-function calculateTimeFraction(timeLeft, timeLimit) {
-    const rawTimeFraction = timeLeft / timeLimit;
-    return rawTimeFraction - (1 / timeLimit) * (1 - rawTimeFraction);
-}
-
 
 function fetchAndStart() {
     fetch("https://period-api.soosbot.com/api")
@@ -154,4 +146,3 @@ function createElements() {
         <p id="current_period"></p>
         </div>`;
 }
-
