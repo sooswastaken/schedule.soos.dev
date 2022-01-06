@@ -88,7 +88,7 @@ function updateTimerColors(secondsLeft, totalTime) {
         // Set the color to red
         document.getElementById("base-timer-path-remaining").style.stroke = "red";
         document.getElementById("base-timer-path-remaining").style.filter = "drop-shadow(0 0 0.75rem rgba(255, 0, 0, 0.336))";
-    } else if(fraction < 30 ) {
+    } else if(fraction < 0.30 ) {
         // Set the color to orange
         document.getElementById("base-timer-path-remaining").style.stroke = "orange";
         document.getElementById("base-timer-path-remaining").style.filter = "drop-shadow(0 0 0.75rem rgba(255, 166, 0, 0.336))";
