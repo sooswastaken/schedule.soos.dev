@@ -62,7 +62,7 @@ body {
   -webkit-transition: 2.5s cubic-bezier(0.18, 0.89, 0.04, 0.97) all;
   fill-rule: nonzero;
   stroke: rgb(0, 255, 140);
-  filter: drop-shadow(0 0 0.75rem #00ff8c48);
+  filter: drop-shadow(0 0 0.75rem #00ff8c6b);
 }
 
 .timer-countdown {

@@ -60,17 +60,17 @@ function fetchAndStart() {
                     formatTime(data.total_period_left_time_in_seconds)
                 )
                 FIRST_TIME_LOAD = false;
-            }
-            startTimer(data);
-            if (!FIRST_TIME_LOAD) {
-                setTimeout((() => {
+                startTimer(data);
+            } else if (!FIRST_TIME_LOAD) {
+                startTimer(data);
+                setTimeout(() => {
                     document.getElementById("current_period").innerHTML = (
-                        current_period
+                        format_string(data.current_period)
                     );
                     document.getElementById("current_day").innerHTML = (
-                        current_day
+                        format_string(data.day_type)
                     );
-                }, 1500));
+                }, 1000);
             }
         });
 }
@@ -96,7 +96,7 @@ function updateTimerColors(secondsLeft, totalTime) {
     } else {
         // Set the color to green
         document.getElementById("base-timer-path-remaining").style.stroke = "rgb(0, 255, 140)";
-        document.getElementById("base-timer-path-remaining").style.filter = "drop-shadow(0 0 0.75rem #00ff8c48)";
+        document.getElementById("base-timer-path-remaining").style.filter = "drop-shadow(0 0 0.75rem #00ff8c6b);";
 
     }
 }
