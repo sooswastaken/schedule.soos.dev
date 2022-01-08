@@ -53,6 +53,9 @@ function fetchAndStart() {
     fetch("https://period-api.soosbot.com/api")
         .then(response => response.json())
         .then(data => {
+            if (data.WEEKEND) {
+                window.location = "/weekend.html"
+            }
             if (FIRST_TIME_LOAD) {
                 updateDocumentWithNewData(
                     format_string(data.period_type),
