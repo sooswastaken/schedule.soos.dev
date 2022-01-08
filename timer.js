@@ -55,9 +55,9 @@ function fetchAndStart() {
         .then(data => {
             if (FIRST_TIME_LOAD) {
                 updateDocumentWithNewData(
-                    format_string(data.current_period),
+                    format_string(data.period_type),
                     format_string(data.day_type),
-                    formatTime(data.total_period_left_time_in_seconds)
+                    formatTime(data.time_left)
                 )
                 FIRST_TIME_LOAD = false;
                 startTimer(data);
@@ -65,7 +65,7 @@ function fetchAndStart() {
                 startTimer(data);
                 setTimeout(() => {
                     document.getElementById("current_period").innerHTML = (
-                        format_string(data.current_period)
+                        format_string(data.period_type)
                     );
                     document.getElementById("current_day").innerHTML = (
                         format_string(data.day_type)
@@ -102,8 +102,8 @@ function updateTimerColors(secondsLeft, totalTime) {
 }
 
 function startTimer(data) {
-    let timeLimit = data.total_period_time_in_seconds;
-    let timePassed = data.total_period_time_in_seconds - data.total_period_left_time_in_seconds;
+    let timeLimit = data.total_time;
+    let timePassed = data.total_time - data.time_left;
     let timeLeft = timeLimit - timePassed;
     let timerInterval = setInterval(() => {
         timePassed++;
