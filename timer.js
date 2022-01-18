@@ -53,6 +53,15 @@ function fetchAndStart() {
     fetch("https://period-api.soosbot.com/api")
         .then(response => response.json())
         .then(data => {
+            if (data.day_type == "EVEN_DAY") {
+                document.getElementById("stingers").classList.remove("invisible");
+                document.getElementById("stinger_one").innerHTML = format_string(data.stingers.one)
+                document.getElementById("stinger_two").innerHTML = format_string(data.stingers.two)
+            } else {
+                document.getElementById("stingers").classList.add("invisible");
+            }
+
+
             if (data.WEEKEND) {
                 window.location = "/weekend.html"
             }
