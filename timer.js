@@ -3,6 +3,7 @@ createElements();
 FIRST_TIME_LOAD = true;
 fetchAndStart();
 loading_bar.go(100);
+console.log("why are you here leave")
 
 
 // Functions
