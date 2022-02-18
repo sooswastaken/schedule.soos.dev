@@ -1,9 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
+import TimerSVG from "./components/TimerSVG"
+import { AnimatePresence, motion } from "framer-motion";
+import Nanobar from "nanobar";
+
+
+function titleCase(str) {
+  str = str.toLowerCase().split(' ');
+  for (let i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join(' ');
+}
+
+function format_string(string) {
+  string = titleCase(string)
+  string = string.replace(/_/g," ");
+  return string
+}
+
+function formatTime(time) {
+  const minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+  if (seconds < 10) {
+      seconds = `0${seconds}`;
+  }
+  return `${minutes}:${seconds}`;
+}
 
 function App() {
 
   const [strokeDashedArrayValue, setStrokeDashedArrayValue] = useState(283);
   const [stingers, setStingers] = useState(null);
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [timeValue, setTimeValue] = useState(0);
+  const nanobar = new Nanobar();
   
   useEffect(() => {
     fetchAndStart();
@@ -13,9 +44,17 @@ function App() {
     fetch("https://period-api.soosbot.com/api")
     .then(response => response.json())
     .then(data => {
-      if(data.day_type == "EVEN_DAY") {
-        setStingers(data.stingers)
+      if(data.day_type === "EVEN_DAY") {
+        setStingers(data.stingers);
       }
+
+      console.log(data)
+      setApiData(data)
+      setTimeValue(data.time_left)
+      timer(data)
+
+      setLoading(false);
+      nanobar.go(100)
      })
   }
 
@@ -26,7 +65,7 @@ function App() {
     let timerInterval = setInterval(() => {
         timePassed++;
         timeLeft = timeLimit - timePassed;
-        // Update document here
+        setTimeValue(timeLeft)
         if (timeLeft <= 0) {
             document.getElementById("timer-countdown").innerHTML = "0:00"
             // onTimesUp(timerInterval)
@@ -39,31 +78,26 @@ function App() {
 
 
   return (
-    <>
-    <div className="timer">
+
+    
+    !(loading) && (
+      <AnimatePresence>
+        <motion.div
+          initial= {{opacity: 0}}
+          animate= {{opacity: 1}}
+          exit= {{opacity: 0}}
+          transition={{duration: 0.4}}>
+      <div className="timer">
       <div className="base-timer">
-      <svg class="base-timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <g class="base-timer-circle">
-            <circle class="base-timer-path-elapsed" cx="50" cy="50" r="45"></circle>
-            <path
-            id="base-timer-path-remaining"
-            stroke-dasharray="283"
-            class="base-timer-path-remaining"
-            d="
-            M 50, 50
-            m -45, 0
-            a 45,45 0 1,0 90,0
-            a 45,45 0 1,0 -90,0
-            "
-            ></path>
-          </g>
-        </svg>
-        <span id="timer-countdown" class="timer-countdown"></span>
-        <h1 id="current_day"></h1>
-        <p id="current_period"></p>
+        <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue}/>
+        <span id="timer-countdown" className="timer-countdown">{formatTime(timeValue)}</span>
+        <h1 id="current_day">{format_string(apiData.day_type)}</h1>
+        <p id="current_period">{format_string(apiData.period_type)}</p>
       </div>
     </div>
-    </>
+    </motion.div>
+    </AnimatePresence>
+    )
   );
 }
 
