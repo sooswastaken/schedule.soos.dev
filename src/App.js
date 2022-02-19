@@ -72,7 +72,6 @@ function App() {
         if (data.weekend) {
           setWeekend(true)
           setLoading(false)
-          console.log("HI")
           return
         }
         if (data.day_type === "BLACK_DAY") {
