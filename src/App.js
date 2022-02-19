@@ -43,6 +43,7 @@ function App() {
   const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
   const [weekend, setWeekend] = useState(false)
   const [apiError, setApiError] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const loading_bar = new Nanobar();
 
   useEffect(() => {
@@ -65,13 +66,20 @@ function App() {
   }
 
   function fetchAndStart() {
+    setApiData(null)
+    setWeekend(null)
+    setStingers(null)
+    setRefreshing(true)
     fetch("https://period-api.soosbot.com/api")
       .then(response => response.json())
       .then(data => {
         
         if (data.weekend) {
+          console.log(data.weekend)
           setWeekend(true)
-          setLoading(false)
+          setApiError(false)
+          setLoading(false);
+          setRefreshing(false)
           return
         }
         if (data.day_type === "BLACK_DAY") {
@@ -82,9 +90,15 @@ function App() {
         setTimeValue(data.time_left)
         timer(data)
 
+        console.log("setting api error to false!")
+
+        setApiError(false)
         setLoading(false);
+        setRefreshing(false)
+  
       })
       .catch((error) => {
+        console.log("there was an error?")
         setApiError(true)
         setLoading(false)
       });
@@ -164,16 +178,18 @@ function App() {
         }
 
         {
-          <motion.div className="error"            
-          initial={{ opacity: 0,}}
-          animate={{ opacity: 1}}
-          exit={{ opacity: 0 }}>
-            Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
-          </motion.div>
+          apiError && (
+            <motion.div className="error"            
+            initial={{ opacity: 0,}}
+            animate={{ opacity: 1}}
+            exit={{ opacity: 0 }}>
+              Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
+            </motion.div>
+          )
         }
 
 
-        {(!(loading) && !(weekend) && !(apiError)) && (
+        {(!(loading) && !(weekend) && !(apiError) && (!refreshing)) && (
           <motion.div id="timer" key={"somethingelse"}
             initial={{ opacity: 0,}}
             animate={{ opacity: 1}}
