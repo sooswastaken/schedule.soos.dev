@@ -40,6 +40,7 @@ function App() {
   const [outOfSync, setOutOfSync] = useState(true);
   const timerInterval = useRef(null);
   const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
+  const [weekend, setWeekend] = useState(false)
 
   useEffect(() => {
     fetchAndStart();
@@ -64,6 +65,13 @@ function App() {
     fetch("https://period-api.soosbot.com/api")
       .then(response => response.json())
       .then(data => {
+        
+        if (data.weekend) {
+          setWeekend(true)
+          setLoading(false)
+          console.log("HI")
+          return
+        }
         if (data.day_type === "BLACK_DAY") {
             setStingers(data.stingers)
         }
@@ -119,6 +127,7 @@ function App() {
 
 
 
+
   return (
     <>
       <AnimatePresence>
@@ -134,8 +143,19 @@ function App() {
           )
         }
 
+        {
+          weekend && (
+            <motion.div key="weekend"
+            initial={{ opacity: 0,}}
+            animate={{ opacity: 1}}
+            exit={{ opacity: 0 }}>
+              <h1>It is a weekend. What are you doing here?</h1>
+            </motion.div>
+          )
+        }
 
-        {!(loading) && (
+
+        {(!(loading) && !(weekend)) && (
           <motion.div id="timer" key={"somethingelse"}
             initial={{ opacity: 0,}}
             animate={{ opacity: 1}}
