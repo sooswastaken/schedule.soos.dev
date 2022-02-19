@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import TimerSVG from "./components/TimerSVG"
 import { AnimatePresence, motion } from "framer-motion";
-import Nanobar from "nanobar";
-import { Button } from "@mui/material";
 
 
 function titleCase(str) {
