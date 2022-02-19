@@ -58,7 +58,7 @@ function App() {
   }
 
   function fetchAndStart() {
-    fetch("http://192.168.1.224/api")
+    fetch("https://period-api.soosbot.com/api")
       .then(response => response.json())
       .then(data => {
         if (data.day_type === "EVEN_DAY") {
