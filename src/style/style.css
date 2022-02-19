@@ -266,4 +266,11 @@
 .outOfSync button:active {
   background-color: #222222;
   transform: scale(0.98);
+}
+
+.weekend {
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }/*# sourceMappingURL=style.css.map */

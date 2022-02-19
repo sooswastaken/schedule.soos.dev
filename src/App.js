@@ -149,7 +149,10 @@ function App() {
             initial={{ opacity: 0,}}
             animate={{ opacity: 1}}
             exit={{ opacity: 0 }}>
-              <h1>It is a weekend. What are you doing here?</h1>
+              <h3 class="weekend">It's the weekend.
+              <br />
+              <br />
+               What are you doing here?</h3>
             </motion.div>
           )
         }
