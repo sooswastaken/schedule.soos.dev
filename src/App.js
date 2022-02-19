@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import TimerSVG from "./components/TimerSVG"
 import { AnimatePresence, motion } from "framer-motion";
 import Nanobar from "nanobar";
+import { Button } from "@mui/material";
 
 
 function titleCase(str) {
   str = str.toLowerCase().split(' ');
   for (let i = 0; i < str.length; i++) {
-      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
   }
   return str.join(' ');
 }
 
 function format_string(string) {
   string = titleCase(string)
-  string = string.replace(/_/g," ");
+  string = string.replace(/_/g, " ");
   return string
 }
 
@@ -22,7 +23,7 @@ function formatTime(time) {
   const minutes = Math.floor(time / 60);
   let seconds = time % 60;
   if (seconds < 10) {
-      seconds = `0${seconds}`;
+    seconds = `0${seconds}`;
   }
   return `${minutes}:${seconds}`;
 }
@@ -34,71 +35,146 @@ function App() {
   const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [timeValue, setTimeValue] = useState(0);
-  const nanobar = new Nanobar();
-  
+  const [svgStyle, setSvgStyle] = useState({ stroke: "drop-shadow(0 0 0.75rem #00ff8c6b)", filter: "drop-shadow(0 0 0.75rem #00ff8c6b)" })
+  const [outOfSync, setOutOfSync] = useState(true);
+  const timerInterval = useRef(null);
+  const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
+
   useEffect(() => {
     fetchAndStart();
   }, [])
 
-  function fetchAndStart() {
-    fetch("https://period-api.soosbot.com/api")
+
+
+  function checkIfOutOfSync() {
+    fetch("http://192.168.1.224/api")
     .then(response => response.json())
     .then(data => {
-      if(data.day_type === "EVEN_DAY") {
-        setStingers(data.stingers);
-      }
+      console.log("CLIENT VALUE :" + timeValue)
+      console.log("SERVER VALUE: " + data.time_left)
+    })
+  }
 
-      console.log(data)
-      setApiData(data)
-      setTimeValue(data.time_left)
-      timer(data)
+  function setCircleDasharray(timeLeft, timeLimit) {
+    setStrokeDashedArrayValue(`${((timeLeft / timeLimit) * 283)} 283`)
+  }
 
-      setLoading(false);
-      nanobar.go(100)
-     })
+  function fetchAndStart() {
+    fetch("http://192.168.1.224/api")
+      .then(response => response.json())
+      .then(data => {
+        if (data.day_type === "EVEN_DAY") {
+            setStingers(data.stingers)
+        }
+
+        setApiData(data)
+        setTimeValue(data.time_left)
+        timer(data)
+
+        setLoading(false);
+      })
   }
 
   function timer(data) {
     let timeLimit = data.total_time;
     let timePassed = data.total_time - data.time_left;
     let timeLeft = timeLimit - timePassed;
-    let timerInterval = setInterval(() => {
-        timePassed++;
-        timeLeft = timeLimit - timePassed;
-        setTimeValue(timeLeft)
-        if (timeLeft <= 0) {
-            document.getElementById("timer-countdown").innerHTML = "0:00"
-            // onTimesUp(timerInterval)
-        }
-        // updateTimerColors(timeLeft, timeLimit)
-        // setCircleDasharray(timeLeft, timeLimit);
+     timerInterval.current = setInterval(() => {
+      timePassed++;
+      timeLeft = timeLimit - timePassed;
+
+      setTimeValue(timeLeft)
+      if (timeLeft <= 0) {
+        setTimeValue(0)
+        onTimesUp()
+      }
+      updateTimerColors(timeLeft, timeLimit)
+      setCircleDasharray(timeLeft, timeLimit);
     }, 1000)
+  }
+
+  function onTimesUp() {
+    setTimeValue(0)
+    clearInterval(timerInterval.current)
+    // Wait 2 seconds before fetching new data. This because im lazy to fix the bug with the api..
+    setTimeout(fetchAndStart, 1000);
+  }
+
+  function updateTimerColors(secondsLeft, totalTime) {
+    let fraction = secondsLeft / totalTime;
+    if (fraction < 0.10) {
+      // Set the color to red
+      setSvgStyle({ stroke: "red", filter: "drop-shadow(0 0 0.75rem rgba(255, 0, 0, 0.336))" })
+    } else if (fraction < 0.30) {
+      // Set the color to orange
+      setSvgStyle({ stroke: "orange", filter: "drop-shadow(0 0 0.75rem rgba(255, 166, 0, 0.336))" })
+
+    } else {
+      // Set the color to green
+      setSvgStyle({ stroke: "rgb(0, 255, 140)", filter: "drop-shadow(0 0 0.75rem #00ff8c6b)" })
+
+    }
   }
 
 
 
   return (
-
-    
-    !(loading) && (
+    <>
       <AnimatePresence>
-        <motion.div
-          initial= {{opacity: 0}}
-          animate= {{opacity: 1}}
-          exit= {{opacity: 0}}
-          transition={{duration: 0.4}}>
-      <div className="timer">
-      <div className="base-timer">
-        <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue}/>
-        <span id="timer-countdown" className="timer-countdown">{formatTime(timeValue)}</span>
-        <h1 id="current_day">{format_string(apiData.day_type)}</h1>
-        <p id="current_period">{format_string(apiData.period_type)}</p>
-      </div>
-    </div>
-    </motion.div>
-    </AnimatePresence>
-    )
+
+        {
+          loading && (
+            <motion.div className="loading" key={"something"}
+            initial={{ opacity: 0,}}
+            animate={{ opacity: 1}}
+            exit={{ opacity: 0 }}>
+              <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            </motion.div>
+          )
+        }
+
+
+        {!(loading) && (
+          <motion.div id="timer" key={"somethingelse"}
+            initial={{ opacity: 0,}}
+            animate={{ opacity: 1}}
+            exit={{ opacity: 0 }}>
+            <div className="base-timer">
+              <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue} svgStyle={svgStyle} />
+              <span id="timer-countdown" className="timer-countdown">{formatTime(timeValue)}</span>
+              <h1 id="current_day">{format_string(apiData.day_type)}</h1>
+              <p id="current_period">{format_string(apiData.period_type)}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {stingers && (
+          <motion.div id="stingers" className="stingers" key={"anotherthing"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}>
+            <h3>Today's Stingers</h3>
+            <p id="stinger_one">{format_string(stingers.one)}</p>
+            <p id="stinger_two">{format_string(stingers.two)}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {
+        outOfSync && (
+          <motion.div className="outOfSync">
+            <button onClick={() => {
+              clearInterval(timerInterval.current)
+              fetchAndStart()
+            }} >Refresh</button>
+          </motion.div>
+        )
+      }
+    </>
+
   );
+
+
 }
 
 
