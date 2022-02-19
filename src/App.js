@@ -18,12 +18,15 @@ function format_string(string) {
 }
 
 function formatTime(time) {
-  const minutes = Math.floor(time / 60);
+  console.log("s")
+  let hours = Math.floor(time / 3600);
+  time %= 3600;
+  let minutes = Math.floor(time / 60);
   let seconds = time % 60;
-  if (seconds < 10) {
-    seconds = `0${seconds}`;
-  }
-  return `${minutes}:${seconds}`;
+  if(hours === 0) {
+    return `${minutes}:${seconds}`;
+  } else
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 function App() {
