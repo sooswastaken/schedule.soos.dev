@@ -61,7 +61,7 @@ function App() {
     fetch("https://period-api.soosbot.com/api")
       .then(response => response.json())
       .then(data => {
-        if (data.day_type === "EVEN_DAY") {
+        if (data.day_type === "BLACK_DAY") {
             setStingers(data.stingers)
         }
 
