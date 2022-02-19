@@ -20,7 +20,6 @@ function format_string(string) {
 }
 
 function formatTime(time) {
-  console.log("s")
   let hours = Math.floor(time / 3600);
   time %= 3600;
   let minutes = Math.floor(time / 60);
@@ -151,7 +150,7 @@ function App() {
             initial={{ opacity: 0,}}
             animate={{ opacity: 1}}
             exit={{ opacity: 0 }}>
-              <h3 class="weekend">It's the weekend.
+              <h3 className="weekend">It's the weekend.
               <br />
               <br />
                What are you doing here?</h3>
