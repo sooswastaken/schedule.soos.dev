@@ -233,22 +233,28 @@
 
   button {
     cursor: pointer;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    background-color: rgb(47, 47, 47);
+    background-color: #2f2f2f;
     border: none;
-    padding: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border-radius: 0.2em !important;
     &:hover {
       background-color: rgb(39, 39, 39);
     }
 
     &:active {
       background-color: rgb(34, 34, 34);
-      transform: scale(0.98);
+      transform: scale(0.99);
     }
     transition: all 0.1s ease-in-out;
     color: white;
     border-radius: 0.1em;
-    font-weight: bold;
+    text-transform: none !important;
+    img {
+      margin-right: 0.7em;
+    }
   }
   margin-bottom: 1em;
   margin-right: 1em;

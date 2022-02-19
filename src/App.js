@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import TimerSVG from "./components/TimerSVG"
 import { AnimatePresence, motion } from "framer-motion";
-
+import { Button } from "@material-ui/core";
+import refresh_icon from "./icons/refresh.svg"
+import Nanobar from "nanobar";
 
 function titleCase(str) {
   str = str.toLowerCase().split(' ');
@@ -41,6 +43,7 @@ function App() {
   const timerInterval = useRef(null);
   const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
   const [weekend, setWeekend] = useState(false)
+  const loading_bar = new Nanobar();
 
   useEffect(() => {
     fetchAndStart();
@@ -187,10 +190,14 @@ function App() {
       {
         outOfSync && (
           <motion.div className="outOfSync">
-            <button onClick={() => {
+            <Button size="small" onClick={() => {
               clearInterval(timerInterval.current)
               fetchAndStart()
-            }} >Refresh</button>
+              loading_bar.go(100)
+            }} >
+              <img src={refresh_icon} alt="?" />
+              Refresh
+              </Button>
           </motion.div>
         )
       }
