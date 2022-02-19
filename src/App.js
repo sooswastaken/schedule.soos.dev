@@ -42,6 +42,7 @@ function App() {
   const timerInterval = useRef(null);
   const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
   const [weekend, setWeekend] = useState(false)
+  const [apiError, setApiError] = useState(false)
   const loading_bar = new Nanobar();
 
   useEffect(() => {
@@ -83,6 +84,10 @@ function App() {
 
         setLoading(false);
       })
+      .catch((error) => {
+        setApiError(true)
+        setLoading(false)
+      });
   }
 
   function timer(data) {
@@ -158,8 +163,17 @@ function App() {
           )
         }
 
+        {
+          <motion.div className="error"            
+          initial={{ opacity: 0,}}
+          animate={{ opacity: 1}}
+          exit={{ opacity: 0 }}>
+            Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
+          </motion.div>
+        }
 
-        {(!(loading) && !(weekend)) && (
+
+        {(!(loading) && !(weekend) && !(apiError)) && (
           <motion.div id="timer" key={"somethingelse"}
             initial={{ opacity: 0,}}
             animate={{ opacity: 1}}
