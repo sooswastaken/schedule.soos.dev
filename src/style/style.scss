@@ -248,6 +248,9 @@
       background-color: rgb(34, 34, 34);
       transform: scale(0.99);
     }
+    &:hover img {
+      animation: wobble 1s 1;
+    }
     transition: all 0.1s ease-in-out;
     color: white;
     border-radius: 0.1em;
@@ -275,4 +278,20 @@
   display: flex;
   justify-content: center;
   text-align: center;
+}
+
+
+@keyframes wobble {
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(-30deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
