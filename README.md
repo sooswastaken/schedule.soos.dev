@@ -7,4 +7,4 @@ This website informs it's users of a bell schedule. It is made to be minimalisti
 
 
 #### API
-The API that is powering this application is [period-api.soosbot.com](https://period-api.soosbot.com) and is currently not open source.
+The API that is powering this application is on [period-api.soosbot.com](https://period-api.soosbot.com) and is currently not open source.
