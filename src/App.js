@@ -108,7 +108,7 @@ function App() {
 
         setApiError(false)
         setLoading(false);
-        setTimeout(() => setRefreshing(false), 5000)
+        setRefreshing(false);
 
       })
       .catch((error) => {
