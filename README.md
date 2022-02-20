@@ -1,3 +1,10 @@
 ## React rewrite of period.soosbot.com
 
-This build is currently in production. It is still buggy and do~~es not~~ have a weekend function. 
+This build is currently in production. If you see any bugs please open a issue.
+
+### More information
+This website informs it's users of a bell schedule. It is made to be minimalistic and ~~fast~~.
+
+
+#### API
+The API that is powering this application is on [period-api.soosbot.com](https://period-api.soosbot.com) and is currently not open source.
