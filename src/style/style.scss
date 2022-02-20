@@ -13,6 +13,11 @@
   height: 5px;
 }
 
+body {
+  background-color: rgb(27, 27, 27);
+
+}
+
 #root {
   display: grid;
   height: 100vh;
@@ -280,3 +285,13 @@
 }
 
 
+
+.timestamp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.733);
+  padding: 1em;
+  margin-top: 1em;
+  margin-left: 1em;
+}

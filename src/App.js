@@ -48,6 +48,7 @@ function App() {
   const [refreshButtonIconAngle, setRefreshButtonIconAngle] = useState(0);
   const [ratelimited, setRatelimited] = useState(false);
   const [ratelimitedCountDown, setRatelimitedCountDown] = useState("?");
+  const [currentTime, setCurrentTime] = useState(0);
 
   const loading_bar = new Nanobar();
 
@@ -56,15 +57,35 @@ function App() {
   }, [])
 
 
-
-  function checkIfOutOfSync() {
-    fetch("https://period-api.soosbot.com/api")
-      .then(response => response.json())
-      .then(data => {
-        console.log("CLIENT VALUE :" + timeValue)
-        console.log("SERVER VALUE: " + data.time_left)
-      })
+  function ordinal(n) {
+    var s = ["th", "st", "nd", "rd"];
+    var v = n%100;
+    return n + (s[(v-20)%10] || s[v] || s[0]);
   }
+  
+
+
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
+  function timeConverter(date){
+    if(date === 0) return ""
+    var months = ['January','Febuary','March','April','May','June','July','August','September','October','November','December'];
+    var month = months[date.getMonth()];
+    var day = date.getDate();
+    return `${month} ${ordinal(day)} ${formatAMPM(date)}`;
+  }
+
+
+
 
   function setCircleDasharray(timeLeft, timeLimit) {
     setStrokeDashedArrayValue(`${((timeLeft / timeLimit) * 283)} 283`)
@@ -77,7 +98,6 @@ function App() {
         if (data.success === false) {
           setRatelimited(true)
           setLoading(false)
-          console.log("RATELIMITED!!!!")
           let counter = Math.round(data.retryAfter)
           setInterval(() => {
             setRatelimitedCountDown(counter)
@@ -104,7 +124,6 @@ function App() {
         setTimeValue(data.time_left)
         timer(data)
 
-        console.log("setting api error to false!")
 
         setApiError(false)
         setLoading(false);
@@ -112,7 +131,6 @@ function App() {
 
       })
       .catch((error) => {
-        console.log("there was an error?" + error)
         setApiError(true)
         setLoading(false)
       });
@@ -122,10 +140,12 @@ function App() {
     let timeLimit = data.total_time;
     let timePassed = data.total_time - data.time_left;
     let timeLeft = timeLimit - timePassed;
+    let currentDate = new Date(data.now);
     timerInterval.current = setInterval(() => {
       timePassed++;
+      currentDate = new Date(currentDate.getTime() + 1000);
       timeLeft = timeLimit - timePassed;
-
+      setCurrentTime(currentDate)
       setTimeValue(timeLeft)
       if (timeLeft <= 0) {
         setTimeValue(0)
@@ -165,6 +185,18 @@ function App() {
   return (
     <>
       <AnimatePresence>
+
+
+
+      {
+          (!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited) && currentTime) && (
+            <motion.div className="timestamp" key={"something"}
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}>
+                {timeConverter(currentTime)}
+            </motion.div>
+          )
+        }
 
         {
           loading && (
