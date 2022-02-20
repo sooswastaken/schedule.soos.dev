@@ -50,10 +50,11 @@ function App() {
   const [ratelimitedCountDown, setRatelimitedCountDown] = useState("?");
   const [currentTime, setCurrentTime] = useState(0);
 
-  const loading_bar = new Nanobar();
+  const loading_bar = useRef();
 
   useEffect(() => {
     fetchAndStart();
+    loading_bar.current = new Nanobar();
   }, [])
 
 
@@ -273,7 +274,7 @@ function App() {
             <Button size="small" onClick={() => {
               clearInterval(timerInterval.current)
               fetchAndStart()
-              loading_bar.go(100)
+              loading_bar.current.go(100)
               setApiData(null)
               setWeekend(null)
               setStingers(null)
