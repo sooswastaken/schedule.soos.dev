@@ -41,15 +41,13 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [timeValue, setTimeValue] = useState(0);
   const [svgStyle, setSvgStyle] = useState({ stroke: "drop-shadow(0 0 0.75rem #00ff8c6b)", filter: "drop-shadow(0 0 0.75rem #00ff8c6b)" })
-  const [outOfSync, setOutOfSync] = useState(true);
   const timerInterval = useRef(null);
-  const [checkOutOfSyncCountDown, setCheckOutOfSyncCountDown] = useState(10);
   const [weekend, setWeekend] = useState(false)
   const [apiError, setApiError] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [refreshButtonIconAngle, setRefreshButtonIconAngle] = useState(0);
   const [ratelimited, setRatelimited] = useState(false);
-  const [ratelimitedCountDown, setRatelimitedCountDown] = useState(0);
+  const [ratelimitedCountDown, setRatelimitedCountDown] = useState("?");
 
   const loading_bar = new Nanobar();
 
@@ -142,7 +140,7 @@ function App() {
     setTimeValue(0)
     clearInterval(timerInterval.current)
     // Wait 2 seconds before fetching new data. This because im lazy to fix the bug with the api..
-    setTimeout(fetchAndStart, 1000);
+    setTimeout(fetchAndStart, 2000);
   }
 
   function updateTimerColors(secondsLeft, totalTime) {
@@ -172,8 +170,7 @@ function App() {
           loading && (
             <motion.div className="loading" key={"something"}
               initial={{ opacity: 0, }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
+              animate={{ opacity: 1 }}>
               <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             </motion.div>
           )
@@ -183,8 +180,7 @@ function App() {
           weekend && (
             <motion.div key="weekend"
               initial={{ opacity: 0, }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
+              animate={{ opacity: 1 }}>
               <h3 className="weekend">It's the weekend.
                 <br />
                 <br />
@@ -197,9 +193,8 @@ function App() {
           ratelimited && (
             <motion.div className="error"
               initial={{ opacity: 0, }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
-              Please stop spaming requests. You will be unblocked in {ratelimitedCountDown === 1 ? "a" : ""} {ratelimitedCountDown} second{ratelimitedCountDown === 1 ? "" : "s"}.
+              animate={{ opacity: 1 }}>
+              Please stop spaming requests. You will be unblocked in {ratelimitedCountDown === 1 ? "a second"  : ratelimitedCountDown + " seconds"}.
             </motion.div>
           )
         }
@@ -209,8 +204,7 @@ function App() {
           apiError && (
             <motion.div className="error"
               initial={{ opacity: 0, }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
+              animate={{ opacity: 1 }}>
               Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
             </motion.div>
           )
@@ -220,8 +214,7 @@ function App() {
         {(!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited)) && (
           <motion.div id="timer" key={"somethingelse"}
             initial={{ opacity: 0, }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}>
+            animate={{ opacity: 1 }}>
             <div className="base-timer">
               <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue} svgStyle={svgStyle} />
               <span id="timer-countdown" className="timer-countdown">{formatTime(timeValue)}</span>
@@ -234,8 +227,7 @@ function App() {
         {stingers && (
           <motion.div id="stingers" className="stingers" key={"anotherthing"}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}>
+            animate={{ opacity: 1 }}>
             <h3>Today's Stingers</h3>
             <p id="stinger_one">{format_string(stingers.one)}</p>
             <p id="stinger_two">{format_string(stingers.two)}</p>
@@ -243,10 +235,8 @@ function App() {
         )}
       </AnimatePresence>
 
-      {
-        outOfSync && (
           <motion.div className="outOfSync"
-          animate={{display: ratelimited ? "None" : "block"}}
+          animate={{opacity: ratelimited ? 0.2 : 1}}
           >
             <Button size="small" onClick={() => {
               clearInterval(timerInterval.current)
@@ -266,8 +256,6 @@ function App() {
               Refresh
             </Button>
           </motion.div>
-        )
-      }
     </>
 
   );
