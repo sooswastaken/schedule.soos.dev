@@ -25,10 +25,10 @@ function formatTime(time) {
   let minutes = Math.floor(time / 60);
   let seconds = time % 60;
   if (seconds < 10) seconds = `0${seconds}`
-  if(hours === 0) {
+  if (hours === 0) {
     return `${minutes}:${seconds}`;
   } else
-  return `${hours}:${minutes}:${seconds}`;
+    return `${hours}:${minutes}:${seconds}`;
 }
 
 function App() {
@@ -46,6 +46,9 @@ function App() {
   const [apiError, setApiError] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [refreshButtonIconAngle, setRefreshButtonIconAngle] = useState(0);
+  const [ratelimited, setRatelimited] = useState(false);
+  const [ratelimitedCountDown, setRatelimitedCountDown] = useState(0);
+
   const loading_bar = new Nanobar();
 
   useEffect(() => {
@@ -56,11 +59,11 @@ function App() {
 
   function checkIfOutOfSync() {
     fetch("https://period-api.soosbot.com/api")
-    .then(response => response.json())
-    .then(data => {
-      console.log("CLIENT VALUE :" + timeValue)
-      console.log("SERVER VALUE: " + data.time_left)
-    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("CLIENT VALUE :" + timeValue)
+        console.log("SERVER VALUE: " + data.time_left)
+      })
   }
 
   function setCircleDasharray(timeLeft, timeLimit) {
@@ -68,16 +71,25 @@ function App() {
   }
 
   function fetchAndStart() {
-    setApiData(null)
-    setWeekend(null)
-    setStingers(null)
-    setRefreshing(true)
     fetch("https://period-api.soosbot.com/api")
       .then(response => response.json())
       .then(data => {
-        
+        if (data.success === false) {
+          setRatelimited(true)
+          setLoading(false)
+          console.log("RATELIMITED!!!!")
+          let counter = Math.round(data.retryAfter)
+          setInterval(() => {
+            setRatelimitedCountDown(counter)
+            counter--;
+            if(counter < 0) {
+              window.location.reload();
+            }
+          }, 1000)
+          return 
+        }
+
         if (data.weekend) {
-          console.log(data.weekend)
           setWeekend(true)
           setApiError(false)
           setLoading(false);
@@ -85,7 +97,7 @@ function App() {
           return
         }
         if (data.day_type === "BLACK_DAY") {
-            setStingers(data.stingers)
+          setStingers(data.stingers)
         }
 
         setApiData(data)
@@ -96,11 +108,11 @@ function App() {
 
         setApiError(false)
         setLoading(false);
-        setRefreshing(false)
-  
+        setTimeout(() => setRefreshing(false), 5000)
+
       })
       .catch((error) => {
-        console.log("there was an error?")
+        console.log("there was an error?" + error)
         setApiError(true)
         setLoading(false)
       });
@@ -110,7 +122,7 @@ function App() {
     let timeLimit = data.total_time;
     let timePassed = data.total_time - data.time_left;
     let timeLeft = timeLimit - timePassed;
-     timerInterval.current = setInterval(() => {
+    timerInterval.current = setInterval(() => {
       timePassed++;
       timeLeft = timeLimit - timePassed;
 
@@ -157,9 +169,9 @@ function App() {
         {
           loading && (
             <motion.div className="loading" key={"something"}
-            initial={{ opacity: 0,}}
-            animate={{ opacity: 1}}
-            exit={{ opacity: 0 }}>
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}>
               <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             </motion.div>
           )
@@ -168,33 +180,45 @@ function App() {
         {
           weekend && (
             <motion.div key="weekend"
-            initial={{ opacity: 0,}}
-            animate={{ opacity: 1}}
-            exit={{ opacity: 0 }}>
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}>
               <h3 className="weekend">It's the weekend.
-              <br />
-              <br />
-               What are you doing here?</h3>
+                <br />
+                <br />
+                What are you doing here?</h3>
             </motion.div>
           )
         }
 
         {
+          ratelimited && (
+            <motion.div className="error"
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}>
+              Please stop spaming requests. You will be unblocked in {ratelimitedCountDown === 1 ? "a" : ""} {ratelimitedCountDown} second{ratelimitedCountDown === 1 ? "" : "s"}.
+            </motion.div>
+          )
+        }
+
+
+        {
           apiError && (
-            <motion.div className="error"            
-            initial={{ opacity: 0,}}
-            animate={{ opacity: 1}}
-            exit={{ opacity: 0 }}>
+            <motion.div className="error"
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}>
               Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
             </motion.div>
           )
         }
 
 
-        {(!(loading) && !(weekend) && !(apiError) && (!refreshing)) && (
+        {(!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited)) && (
           <motion.div id="timer" key={"somethingelse"}
-            initial={{ opacity: 0,}}
-            animate={{ opacity: 1}}
+            initial={{ opacity: 0, }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}>
             <div className="base-timer">
               <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue} svgStyle={svgStyle} />
@@ -219,19 +243,26 @@ function App() {
 
       {
         outOfSync && (
-          <motion.div className="outOfSync">
+          <motion.div className="outOfSync"
+          animate={{display: ratelimited ? "None" : "block"}}
+          >
             <Button size="small" onClick={() => {
               clearInterval(timerInterval.current)
               fetchAndStart()
               loading_bar.go(100)
-              if(!refreshing) {
-                setRefreshButtonIconAngle(refreshButtonIconAngle+360)
+              setApiData(null)
+              setWeekend(null)
+              setStingers(null)
+              setRatelimited(null)
+              if (!refreshing) {
+                setRefreshButtonIconAngle(refreshButtonIconAngle + 360)
               }
+              setRefreshing(true)
             }} >
-              <motion.img src={refresh_icon} alt="?" animate={{rotate:`${refreshButtonIconAngle}deg`}}
-              transition={{delay: 0.1, type: "spring", duration: 0.8}}/>
+              <motion.img src={refresh_icon} alt="?" animate={{ rotate: `${refreshButtonIconAngle}deg`,}}
+                transition={{ delay: 0.1, type: "spring", duration: 0.8 }} />
               Refresh
-              </Button>
+            </Button>
           </motion.div>
         )
       }

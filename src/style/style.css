@@ -268,7 +268,7 @@
 }
 .outOfSync button:active {
   background-color: #222222;
-  transform: scale(0.99);
+  transform: scale(0.97);
 }
 .outOfSync button img {
   margin-right: 0.7em;
@@ -279,10 +279,6 @@
   display: flex;
   justify-content: center;
   text-align: center;
-}
-
-.outOfSync button :disabled {
-  background-color: gainsboro;
 }
 
 .error {
