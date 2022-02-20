@@ -285,7 +285,7 @@ function App() {
               setRefreshing(true)
             }} >
               <motion.img src={refresh_icon} alt="?" animate={{ rotate: `${refreshButtonIconAngle}deg`,}}
-                transition={{ delay: 0.1, type: "spring", duration: 0.8 }} />
+                transition={{ type: "spring", duration: 0.8 }} />
               Refresh
             </Button>
           </motion.div>
