@@ -245,7 +245,6 @@
   bottom: 0;
   right: 0;
   display: flex;
-  background-color: black;
   margin-bottom: 1em;
   margin-right: 1em;
 }
@@ -258,7 +257,8 @@
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   border-radius: 0.2em !important;
-  transition: all 0.1s ease-in-out;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.685);
+  transition: all 0.3s ease-in-out;
   color: white;
   border-radius: 0.1em;
   text-transform: none !important;
@@ -268,7 +268,7 @@
 }
 .outOfSync button:active {
   background-color: #222222;
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 .outOfSync button img {
   margin-right: 0.7em;

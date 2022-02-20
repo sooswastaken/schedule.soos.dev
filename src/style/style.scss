@@ -228,7 +228,6 @@
   bottom: 0;
   right: 0;
   display: flex;
-  background-color: black;
 
   button {
     cursor: pointer;
@@ -239,15 +238,16 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     border-radius: 0.2em !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.685);
     &:hover {
       background-color: rgb(39, 39, 39);
     }
 
     &:active {
       background-color: rgb(34, 34, 34);
-      transform: scale(0.97);
+      transform: scale(0.98);
     }
-    transition: all 0.1s ease-in-out;
+    transition: all 0.3s ease-in-out;
     color: white;
     border-radius: 0.1em;
     text-transform: none !important;
