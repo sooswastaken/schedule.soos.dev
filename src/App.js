@@ -24,6 +24,7 @@ function formatTime(time) {
   time %= 3600;
   let minutes = Math.floor(time / 60);
   let seconds = time % 60;
+  if (seconds < 10) seconds = `0${seconds}`
   if(hours === 0) {
     return `${minutes}:${seconds}`;
   } else
@@ -44,6 +45,7 @@ function App() {
   const [weekend, setWeekend] = useState(false)
   const [apiError, setApiError] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [refreshButtonIconAngle, setRefreshButtonIconAngle] = useState(0);
   const loading_bar = new Nanobar();
 
   useEffect(() => {
@@ -222,8 +224,12 @@ function App() {
               clearInterval(timerInterval.current)
               fetchAndStart()
               loading_bar.go(100)
+              if(!refreshing) {
+                setRefreshButtonIconAngle(refreshButtonIconAngle+360)
+              }
             }} >
-              <img src={refresh_icon} alt="?" />
+              <motion.img src={refresh_icon} alt="?" animate={{rotate:`${refreshButtonIconAngle}deg`}}
+              transition={{delay: 0.1, type: "spring", duration: 0.8}}/>
               Refresh
               </Button>
           </motion.div>

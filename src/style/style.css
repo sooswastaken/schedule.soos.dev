@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap");
 * {
   overflow: visible;
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .nanobar .bar {
@@ -270,10 +270,6 @@
   background-color: #222222;
   transform: scale(0.99);
 }
-.outOfSync button:hover img {
-  -webkit-animation: wobble 1s 1;
-          animation: wobble 1s 1;
-}
 .outOfSync button img {
   margin-right: 0.7em;
 }
@@ -285,39 +281,13 @@
   text-align: center;
 }
 
+.outOfSync button :disabled {
+  background-color: gainsboro;
+}
+
 .error {
   padding: 1em;
   display: flex;
   justify-content: center;
   text-align: center;
-}
-
-@-webkit-keyframes wobble {
-  25% {
-    transform: rotate(15deg);
-  }
-  50% {
-    transform: rotate(-30deg);
-  }
-  75% {
-    transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes wobble {
-  25% {
-    transform: rotate(15deg);
-  }
-  50% {
-    transform: rotate(-30deg);
-  }
-  75% {
-    transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
 }/*# sourceMappingURL=style.css.map */
