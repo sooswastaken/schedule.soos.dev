@@ -247,8 +247,8 @@
   bottom: 0;
   right: 0;
   display: flex;
-  margin-bottom: 1em;
-  margin-right: 1em;
+  margin-bottom: 2em;
+  margin-right: 2.44em;
 }
 .outOfSync button {
   cursor: pointer;
