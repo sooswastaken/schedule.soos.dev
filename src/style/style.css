@@ -16,6 +16,7 @@
 body {
   background-color: #1b1b1b;
   overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
 }
 
 #root {
