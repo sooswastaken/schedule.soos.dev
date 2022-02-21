@@ -227,7 +227,7 @@ function App() {
             <motion.div className="error"
               initial={{ opacity: 0, }}
               animate={{ opacity: 1 }}>
-              Please stop spaming requests. You will be unblocked in {ratelimitedCountDown === 1 ? "a second"  : ratelimitedCountDown + " seconds"}.
+              Please stop spamming requests. You will be unblocked in {ratelimitedCountDown === 1 ? "a second"  : ratelimitedCountDown + " seconds"}.
             </motion.div>
           )
         }
