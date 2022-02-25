@@ -246,8 +246,8 @@ function App() {
 
         {(!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited)) && (
           <motion.div id="timer" key={"somethingelse"}
-            initial={{ opacity: 0, }}
-            animate={{ opacity: 1 }}>
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}>
             <div className="base-timer">
               <TimerSVG strokeDashedArrayValue={strokeDashedArrayValue} svgStyle={svgStyle} />
               <span id="timer-countdown" className="timer-countdown">{formatTime(timeValue)}</span>
