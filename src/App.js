@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@material-ui/core";
 import refresh_icon from "./icons/refresh.svg"
 import Nanobar from "nanobar";
+import Schedule from "./schedule.png"
 
 function titleCase(str) {
   str = str.toLowerCase().split(' ');
@@ -49,6 +50,8 @@ function App() {
   const [ratelimited, setRatelimited] = useState(false);
   const [ratelimitedCountDown, setRatelimitedCountDown] = useState("?");
   const [currentTime, setCurrentTime] = useState(0);
+
+  const BLACK_DAY_TWO_HOURS_EARLY = true;
 
   const loading_bar = useRef();
 
@@ -178,6 +181,10 @@ function App() {
       setSvgStyle({ stroke: "rgb(0, 255, 140)", filter: "drop-shadow(0 0 0.75rem #00ff8c6b)" })
 
     }
+  }
+
+  if(BLACK_DAY_TWO_HOURS_EARLY) {
+    return <img src={Schedule}/>
   }
 
 
