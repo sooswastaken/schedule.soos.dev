@@ -51,7 +51,7 @@ function App() {
   const [ratelimitedCountDown, setRatelimitedCountDown] = useState("?");
   const [currentTime, setCurrentTime] = useState(0);
 
-  const BLACK_DAY_TWO_HOURS_EARLY = true;
+  const BLACK_DAY_TWO_HOURS_EARLY = false;
 
   const loading_bar = useRef();
 
