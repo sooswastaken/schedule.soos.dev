@@ -151,6 +151,8 @@ function App() {
       timeLeft = timeLimit - timePassed;
       setCurrentTime(currentDate)
       setTimeValue(timeLeft)
+      document.title = format_string(data.period_type) + " ends in " + formatTime(timeLeft);
+
       if (timeLeft <= 0) {
         setTimeValue(0)
         onTimesUp()
