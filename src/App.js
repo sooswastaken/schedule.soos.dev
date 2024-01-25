@@ -43,7 +43,8 @@ function App() {
   const [timeValue, setTimeValue] = useState(0);
   const [svgStyle, setSvgStyle] = useState({ stroke: "drop-shadow(0 0 0.75rem #00ff8c6b)", filter: "drop-shadow(0 0 0.75rem #00ff8c6b)" })
   const timerInterval = useRef(null);
-  const [weekend, setWeekend] = useState(false)
+  const [noSchool, setNoSchool] = useState(false)
+  const [noSchoolReason, setNoSchoolReason] = useState(null)
   const [apiError, setApiError] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [refreshButtonIconAngle, setRefreshButtonIconAngle] = useState(0);
@@ -96,7 +97,7 @@ function App() {
   }
 
   function fetchAndStart() {
-    fetch("https://period-api.soosbot.com/api")
+    fetch("http://api.soos.dev/hhs/calendar/get-period-info")
       .then(response => response.json())
       .then(data => {
         if (data.success === false) {
@@ -113,8 +114,9 @@ function App() {
           return 
         }
 
-        if (data.weekend) {
-          setWeekend(true)
+        if (data.no_school) {
+          setNoSchool(true)
+          setNoSchoolReason(data.message)
           setApiError(false)
           setLoading(false);
           setRefreshing(false)
@@ -199,7 +201,7 @@ function App() {
 
 
       {
-          (!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited) && currentTime) && (
+          (!(loading) && !(apiError) && (!refreshing) && (!ratelimited) && currentTime) && (
             <motion.div className="timestamp" key={"something"}
               initial={{ opacity: 0, }}
               animate={{ opacity: 1 }}>
@@ -219,14 +221,11 @@ function App() {
         }
 
         {
-          weekend && (
+          noSchool && (
             <motion.div key="weekend"
               initial={{ opacity: 0, }}
               animate={{ opacity: 1 }}>
-              <h3 className="weekend">It's the weekend.
-                <br />
-                <br />
-                What are you doing here?</h3>
+              <h3 className="weekend">{noSchoolReason}</h3>
             </motion.div>
           )
         }
@@ -247,13 +246,13 @@ function App() {
             <motion.div className="error"
               initial={{ opacity: 0, }}
               animate={{ opacity: 1 }}>
-              Sorry, we can't reach soosBot's servers. Please refresh in a few moments.
+              Sorry, the server might be offline or there is no network connection. Please refresh in a few moments.
             </motion.div>
           )
         }
 
 
-        {(!(loading) && !(weekend) && !(apiError) && (!refreshing) && (!ratelimited)) && (
+        {(!(loading) && !(noSchool) && !(apiError) && (!refreshing) && (!ratelimited)) && (
           <motion.div id="timer" key={"somethingelse"}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}>
@@ -285,7 +284,7 @@ function App() {
               fetchAndStart()
               loading_bar.current.go(100)
               setApiData(null)
-              setWeekend(null)
+              setNoSchool(false)
               setStingers(null)
               setRatelimited(null)
               if (!refreshing) {
