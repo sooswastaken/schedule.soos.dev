@@ -97,7 +97,7 @@ function App() {
   }
 
   function fetchAndStart() {
-    fetch("http://api.soos.dev/hhs/calendar/get-period-info")
+    fetch("http://api.soos.dev/hhs/calendar/get-period-info", {referrerPolicy: 'no-referrer'})
       .then(response => response.json())
       .then(data => {
         if (data.success === false) {
