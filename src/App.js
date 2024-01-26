@@ -136,8 +136,6 @@ function App() {
         let timeLimit = data.total_time;
         let timePassed = data.total_time - data.time_left;
         let timeLeft = timeLimit - timePassed;
-
-        setStrokeDashedArrayValue("0 283")
         
         setTimeout(() => {
           setCircleDasharray(timeLeft, timeLimit);
