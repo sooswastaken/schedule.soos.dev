@@ -97,6 +97,8 @@ function App() {
   }
 
   function fetchAndStart() {
+    // add elapsed time to the fetch request and console.log it
+    let elapsedTime = Date.now();
     fetch("https://api.soos.dev/hhs/calendar/get-period-info")
       .then(response => response.json())
       .then(data => {
@@ -130,11 +132,26 @@ function App() {
         setTimeValue(data.time_left)
         timer(data)
 
+        setCurrentTime(new Date(data.now))
+        let timeLimit = data.total_time;
+        let timePassed = data.total_time - data.time_left;
+        let timeLeft = timeLimit - timePassed;
+
+        setStrokeDashedArrayValue("0 283")
+        
+        setTimeout(() => {
+          setCircleDasharray(timeLeft, timeLimit);
+        }, 1)
+
+        
+
 
         setApiError(false)
         setLoading(false);
         setRefreshing(false);
 
+        let timeTaken = Date.now() - elapsedTime;
+        console.log("Time taken to fetch data: " + timeTaken + "ms")
       })
       .catch((error) => {
         setApiError(true)
@@ -197,18 +214,16 @@ function App() {
   return (
     <>
       <AnimatePresence>
-
-
-
       {
-          (!(loading) && !(apiError) && (!refreshing) && (!ratelimited) && currentTime) && (
-            <motion.div className="timestamp" key={"something"}
-              initial={{ opacity: 0, }}
-              animate={{ opacity: 1 }}>
-                {timeConverter(currentTime)}
-            </motion.div>
-          )
-        }
+         (!(loading) && !(apiError) && (!refreshing) && (!ratelimited) && currentTime)  &&(
+          <motion.div className="timestamp" key={"something"}
+            initial={{ opacity: 0, }}
+            animate={{ opacity: 1 }}>
+            {timeConverter(currentTime)} 
+          </motion.div>
+        )
+        
+      }
 
         {
           loading && (
