@@ -235,10 +235,10 @@ function App() {
 
         {
           noSchool && (
-            <motion.div key="weekend"
+            <motion.div key="no-school"
               initial={{ opacity: 0, }}
               animate={{ opacity: 1 }}>
-              <h3 className="weekend">{noSchoolReason}</h3>
+              <h3 className="no-school">{noSchoolReason}</h3>
             </motion.div>
           )
         }
