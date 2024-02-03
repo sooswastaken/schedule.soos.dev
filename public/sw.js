@@ -29,6 +29,7 @@ self.addEventListener('push', function(event) {
   // set title to todays date in format "Month Day"
   
   const title = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  console.log(title);
   const options = {
     icon: 'logo192.png',
     badge: 'logo192.png',
