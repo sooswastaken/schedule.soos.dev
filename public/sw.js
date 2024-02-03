@@ -26,14 +26,13 @@ self.addEventListener('push', function(event) {
   console.log('[Service Worker] Push Received.');
   console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
 
-  const title = 'HHS Calendar';
+  const title = event.data.text();
   const options = {
-    body: `"${event.data.text()}"`,
     icon: 'logo192.png',
     badge: 'logo192.png'
   };
 
-  event.waitUntil(self.registration.showNotification(title.replace('"', ''), options));
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', function(event) {

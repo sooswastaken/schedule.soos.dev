@@ -177,6 +177,7 @@ function App() {
         .register("sw.js")
         .then(function (swReg) {
           console.log("Service Worker is registered", swReg);
+          swReg.update();
           setSwRegistration(swReg);
           swReg.pushManager.getSubscription()
           .then(function(subscription) {
