@@ -26,7 +26,9 @@ self.addEventListener('push', function(event) {
   console.log('[Service Worker] Push Received.');
   console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
 
-  const title = ""
+  // set title to todays date in format "Month Day"
+  
+  const title = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
   const options = {
     icon: 'logo192.png',
     badge: 'logo192.png',
