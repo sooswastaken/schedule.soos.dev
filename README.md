@@ -1,4 +1,4 @@
-## Production build schedule.soos.dev
+## Production build of schedule.soos.dev
 
 This build is currently in production. If you see any bugs please open a issue.
 
