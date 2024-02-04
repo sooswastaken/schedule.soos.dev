@@ -22,14 +22,9 @@ function urlB64ToUint8Array(base64String) {
 }
 
 self.addEventListener('push', function(event) {
-  console.log("BRUH AIN'T NO WAY")
   console.log('[Service Worker] Push Received.');
   console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
-
-  // set title to todays date in format "Month Day"
-  
   const title = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-  console.log(title);
   const options = {
     icon: 'logo192.png',
     badge: 'logo192.png',
@@ -45,7 +40,7 @@ self.addEventListener('notificationclick', function(event) {
   event.notification.close();
 
   event.waitUntil(
-    clients.openWindow('https://developers.google.com/web/')
+    clients.openWindow('https://schedule.soos.dev?ref=notification')
   );
 });
 

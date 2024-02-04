@@ -12,7 +12,6 @@ function urlB64ToUint8Array(base64String) {
     .replace(/\-/g, "+")
     .replace(/_/g, "/");
 
-  console.log("base64", base64);
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
 
@@ -85,9 +84,6 @@ function App() {
   const loading_bar = useRef();
 
   function updateSubscriptionOnServer(subscription, state) {
-    console.log("REMOVING FROM DATABASE")
-    console.log("subscription", JSON.stringify({ 'sub_token': subscription }));
-
     fetch(API_URL + '/subscription/', {
         method: 'POST',
         headers: {
@@ -108,17 +104,14 @@ function App() {
         applicationServerKey: applicationServerKey,
       })
       .then(function (subscription) {
-        console.log("User is subscribed.");
 
         updateSubscriptionOnServer(subscription, true);
-        console.log("subscription", subscription);
         localStorage.setItem("sub_token", JSON.stringify(subscription));
         setIsSubscribed(true);
 
         updateBtn(true);  
       })
       .catch(function (err) {
-        console.log("Failed to subscribe the user: ", err);
         updateBtn(false);
       });
   }
@@ -134,7 +127,6 @@ function App() {
     if (state) {
       setToogleNotficationButtonText("Disable Notifications");
     } else {
-      console.log("Setting to enable");
       setToogleNotficationButtonText("Enable Notifications");
     }
 
@@ -154,7 +146,6 @@ function App() {
         console.log("Error unsubscribing", error);
       })
       .then(function () {
-        console.log("User is unsubscribed.");
         setIsSubscribed(false);
 
         updateBtn(false); 
@@ -172,16 +163,13 @@ function App() {
       .catch((error) => console.error("Error:", error));
 
     if ("serviceWorker" in navigator && "PushManager" in window) {
-      console.log("Service Worker and Push is supported");
       navigator.serviceWorker
         .register("sw.js")
         .then(function (swReg) {
-          console.log("Service Worker is registered", swReg);
           swReg.update();
           setSwRegistration(swReg);
           swReg.pushManager.getSubscription()
           .then(function(subscription) {
-            console.log("Bruh", subscription);
             updateBtn(!(subscription === null));
             setIsSubscribed(!(subscription === null));
       });
@@ -195,8 +183,6 @@ function App() {
       toggleNotficationButton.current.style.display = "none";
       setToogleNotficationButtonText("Notifications Not Supported");
     }
-
-    console.log("CALLING FETCH AND sTART")
     fetchAndStart();
     loading_bar.current = new Nanobar();
   }, []);
@@ -247,7 +233,6 @@ function App() {
   }
 
   function fetchAndStart() {
-    // add elapsed time to the fetch request and console.log it
     let elapsedTime = Date.now();
     fetch(API_URL + "/get-period-info")
       .then((response) => response.json())
@@ -337,8 +322,6 @@ function App() {
   function onTimesUp() {
     setTimeValue(0);
     clearInterval(timerInterval.current);
-    // Wait 2 seconds before fetching new data. This because im lazy to fix the bug with the api..
-    console.log("Times up");
     setTimeout(fetchAndStart, 2000);
   }
 
@@ -524,7 +507,6 @@ function App() {
               
                 unsubscribeUser();
             } else {
-              console.log("subscribing");
                 subscribeUser();
             }
           }}
